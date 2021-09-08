@@ -1,0 +1,18 @@
+{
+  "diff": true,
+  "extension": [
+    "ts"
+  ],
+  "timeout": 60000,
+  "ui": "bdd",
+  "spec": [
+    "test/_config.ts",
+    "test/**/*.spec.ts"
+  ],
+  "watch-files": [
+    "test/_config.ts",
+    "test/**/*.ts",
+    "src/**/*.ts",
+    "test/**/*.spec.ts"
+  ]
+}
