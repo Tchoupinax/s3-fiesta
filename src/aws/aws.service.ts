@@ -74,9 +74,9 @@ export default class AwsService {
   }
 
   /**
-   *
+   * Allows to create a folder in the given bucket
    * @param bucket Name of the bucket
-   * @param folder Name of the folder
+   * @param folder Name of the folder you want to create
    * @returns
    */
   async createFolder(bucket: string, folder: string) {
@@ -85,6 +85,14 @@ export default class AwsService {
     return this.api.createFolder(bucket, folder);
   }
 
+  /**
+   * Allows to upload a stream or a file (file will be taken from the given path)
+   * @param bucket Name of the bucket you target
+   * @param folder Name of the folder you will upload to
+   * @param buffer Name of the buffer to upload. If you want to provide a path, provide undefined here
+   * @param path If given, data will be taken from file instead of buffer
+   * @returns
+   */
   async upload(bucket: string, folder: string, buffer?: Buffer, path?: string) {
     this.logger.trace('AWSService.upload');
 
@@ -104,6 +112,12 @@ export default class AwsService {
     return this.api.getUrl(bucket, file);
   }
 
+  /**
+   * Returns an object as a buffer
+   * @param bucket
+   * @param file
+   * @returns
+   */
   async downloadFile(bucket: string, file: string) {
     this.logger.trace('AWSService.downloadfile');
 

@@ -9,6 +9,8 @@
 		"url": "https://github.com/Tchoupinax"
 	},
   "exports": "./lib/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "files": [
 		"lib/index.js",
 		"lib/index.d.ts",
