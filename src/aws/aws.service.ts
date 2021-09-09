@@ -30,6 +30,31 @@ export default class AwsService {
     return this.api.listBuckets();
   }
 
+  async createBucket(name: string) {
+    this.logger.trace('AWSService.createBucket [name=%s]', name);
+
+    try {
+      await this.api.createBucket(name);
+    } catch (err: any) {
+      switch(err.code) {
+      case 'BucketAlreadyOwnedByYou':
+        throw new Error('BUCKET_ALREADY_CREATED_AND_OWNED_BY_YOU');
+      case 'BucketAlreadyExists':
+        throw new Error('BUCKET_ALREADY_USED');
+      default:
+        throw err;
+      }
+    }
+
+    return true;
+  }
+
+  async deleteBucket(name: string) {
+    this.logger.trace('AWSService.deleteBucket [name=%s]', name);
+
+    return this.api.deleteBucket(name);
+  }
+
   /**
    * List all object in a bucket
    */

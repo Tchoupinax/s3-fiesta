@@ -1,0 +1,21 @@
+{
+  "statements": 0,
+  "branches": 0,
+  "functions": 0,
+  "lines": 0,
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "test/**/*.spec.ts"
+  ],
+  "reporter": [
+    "lcov",
+    "text",
+    "text-summary"
+  ],
+  "check-coverage": true,
+  "cache": true,
+  "all": true
+}

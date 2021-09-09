@@ -19,8 +19,8 @@ chai.use(chaiShallowDeepEqual);
 
 import { S3 } from '../src/index';
 
-assert(config.get('AWS_ACCESS_KEY'));
-assert(config.get('AWS_SECRET_KEY'));
+assert(config.get('AWS_ACCESS_KEY'), 'Please provide an AWS_ACCESS_KEY that will be used for the TEST');
+assert(config.get('AWS_SECRET_KEY'), 'Please provide an AWS_SECRET_KEY that will be used for the TEST');
 
 const s3Client: InstanceType<typeof S3> = new S3({
   config: {

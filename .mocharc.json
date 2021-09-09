@@ -7,6 +7,7 @@
   "ui": "bdd",
   "spec": [
     "test/_config.ts",
+    "src/**/*.spec.ts",
     "test/**/*.spec.ts"
   ],
   "watch-files": [

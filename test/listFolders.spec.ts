@@ -4,15 +4,15 @@ import { s3Client } from './_config';
 
 const bucket : string = config.get('bucketName');
 
-describe.only('[TI] - List folders', () => {
-  beforeEach(async () => {
+describe('[TI] - List folders', () => {
+  before(async () => {
     await s3Client.createFolder(bucket, 'folder1');
     await s3Client.createFolder(bucket, 'folder2');
     await s3Client.createFolder(bucket, 'folder3');
-    await s3Client.uploadDocument(bucket, 'folder3/toto', undefined, '/Users/corentin/Documents/perso/creative/module-minio-wrapper/package-lock.json');
+    await s3Client.uploadDocument(bucket, 'folder3/toto', Buffer.from('zoifhzefi'));
   });
 
-  afterEach(async () => {
+  after(async () => {
     await s3Client.deleteFolder(bucket, 'folder1');
     await s3Client.deleteFolder(bucket, 'folder2');
     await s3Client.deleteFolder(bucket, 'folder3');
