@@ -5,31 +5,34 @@
   "license": "MIT",
   "repository": "https://github.com/Tchoupinax/s3-fiesta",
   "author": {
-		"name": "Tchoupinax",
-		"url": "https://github.com/Tchoupinax"
-	},
+    "name": "Tchoupinax",
+    "url": "https://github.com/Tchoupinax"
+  },
   "exports": "./lib/index.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-		"lib/index.js",
-		"lib/index.d.ts",
-		"lib/aws/aws.service.d.ts",
-		"lib/aws/aws.datalayer.d.ts"
-	],
+    "lib/index.js",
+    "lib/index.d.ts",
+    "lib/aws/aws.service.d.ts",
+    "lib/aws/aws.datalayer.d.ts"
+  ],
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register",
-    "test:w": "mocha -r ts-node/register --watch",
-    "test:coverage": "nyx npm run test",
+    "watch": "tsc --watch",
+    "test": "NODE_ENV=test mocha -r ts-node/register",
+    "test:w": "NODE_ENV=test mocha -r ts-node/register --watch",
+    "test:coverage": "NODE_ENV=test nyc npm run test",
     "lint": "npx eslint src --ext ts"
   },
   "dependencies": {
     "aws-sdk": "^2.985.0",
+    "config": "^3.3.6",
     "minio": "^7.0.19"
   },
   "devDependencies": {
     "@types/chai-as-promised": "^7.1.4",
+    "@types/config": "^0.0.39",
     "@types/dirty-chai": "^2.0.2",
     "@types/minio": "^7.0.10",
     "@types/mocha": "^9.0.0",

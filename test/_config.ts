@@ -1,5 +1,5 @@
-import { S3Service } from '../src/index';
-
+import assert from 'assert';
+import config from 'config';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import sinonChai from 'sinon-chai';
@@ -17,12 +17,17 @@ chai.use(chaiAsPromised);
 chai.use(dirtyChai);
 chai.use(chaiShallowDeepEqual);
 
-const s3Client: InstanceType<typeof S3Service> = new S3Service({
+import { S3 } from '../src/index';
+
+assert(config.get('AWS_ACCESS_KEY'));
+assert(config.get('AWS_SECRET_KEY'));
+
+const s3Client: InstanceType<typeof S3> = new S3({
   config: {
     endpoint: 's3.fr-par.scw.cloud',
     useSSL: false,
-    accessKey: '',
-    secretKey: '',
+    accessKey: config.get('AWS_ACCESS_KEY'),
+    secretKey: config.get('AWS_SECRET_KEY'),
     region: 'fr-par',
   },
   logger: { trace: () => {}, debug: () => {}, error: () => {} },

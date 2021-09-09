@@ -72,7 +72,7 @@ export default class AwsDatalayer {
   }
 
   async upload(bucket: string, folder: string, stream: any) {
-    this.logger.trace('MinioApi.upload');
+    this.logger.trace('AWSService.uploadDatalayer [bucket=%s, folder=%s]', bucket, folder);
 
     const params = {
       Body: stream,
@@ -115,5 +115,11 @@ export default class AwsDatalayer {
     this.logger.trace('S3Datalayer.downloadfile');
 
     return this.awsClient.getObject({ Bucket: bucket, Key: file }).promise();
+  }
+
+  async deleteObject(bucket: string, object: string) {
+    this.logger.trace('AwsDatalayer.deleteObject [bucket=%s, object=%s]', bucket, object);
+
+    return this.awsClient.deleteObject({ Bucket: bucket, Key: object }).promise();
   }
 }

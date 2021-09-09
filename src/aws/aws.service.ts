@@ -33,27 +33,49 @@ export default class AwsService {
   /**
    * List all object in a bucket
    */
-  async listObjects(name: string, folder?: string, recursive: boolean = false) {
-    this.logger.trace('AWSService.listObjects');
+  async listObjects(bucket: string, folder?: string) {
+    this.logger.trace('AWSService.listObjects [bucket=%s, folder=%s]', bucket, folder);
 
     const objects : any[] = [];
 
     // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (resolve, reject) => {
-      const stream = await this.api.listObjects(name, folder, recursive);
+      const stream = await this.api.listObjects(bucket, folder, folder ? true : false);
 
       stream.on('data', (obj) => { objects.push(obj); });
       stream.on('error', (err) => { return reject(err); });
       stream.on('end', () => { return resolve(objects); });
     });
 
-    if (!recursive) {
-      return objects.filter(o => o.name).map(o => o.name);
-    }
+    return objects
+      .filter((o: any) => {
+        if (o.name) {
+          return !o.name.includes('keep');
+        }
 
-    // // NOTE: In not recursive mode, folder has a property "prefix"
-    // // in this method we only want theses folders so we filter
-    return objects.map((o: any) => o.name).filter((o: any) => !o.includes('keep'));
+        return true;
+      })
+      .map(o => o.prefix?.slice(0, -1) ?? o.name.replace(`${folder}/`, ''));
+  }
+
+  async listFiles(bucket: string, folder?: string) {
+    this.logger.trace('AWSService.listFiles [bucket=%s, folder=%s]', bucket, folder);
+
+    const objects : any[] = [];
+
+    // eslint-disable-next-line no-async-promise-executor
+    await new Promise(async (resolve, reject) => {
+      const stream = await this.api.listObjects(bucket, folder, folder ? true : false);
+
+      stream.on('data', (obj) => { objects.push(obj); });
+      stream.on('error', (err) => { return reject(err); });
+      stream.on('end', () => { return resolve(objects); });
+    });
+
+    return objects
+      .filter(o => o.name)
+      .map(o => o.name.replace(`${folder}/`, ''))
+      .filter(o => o !== '.keep');
   }
 
   async listFolders(name: string) {
@@ -70,7 +92,7 @@ export default class AwsService {
       stream.on('end', () => { return resolve(objects); });
     });
 
-    return objects.filter(o => o.prefix);
+    return objects.filter(o => o.prefix).map(o => o.prefix.slice(0, -1));
   }
 
   /**
@@ -93,8 +115,8 @@ export default class AwsService {
    * @param path If given, data will be taken from file instead of buffer
    * @returns
    */
-  async upload(bucket: string, folder: string, buffer?: Buffer, path?: string) {
-    this.logger.trace('AWSService.upload');
+  async uploadDocument(bucket: string, folder: string, buffer?: Buffer, path?: string) {
+    this.logger.trace('AWSService.uploadDocument [bucket=%s, folder=%s]', bucket, folder);
 
     let stream;
     if(!path) {
@@ -122,5 +144,37 @@ export default class AwsService {
     this.logger.trace('AWSService.downloadfile');
 
     return (await this.api.downloadFile(bucket, file)).Body;
+  }
+
+  /**
+   * Allows to delete a folder
+   *
+   * ⚠️ All files inside will be DESTROYED !!
+   *
+   * @param bucket Name of the bucket
+   * @param folder Name of the folder to delete
+   */
+  async deleteFolder(bucket: string, folder: string): Promise<boolean> {
+    this.logger.trace('AWSService.deleteFolder [bucket=%s, file=%s]', bucket, folder);
+
+    const filesInTheFolder = await this.listObjects(bucket, folder);
+
+    await Promise.allSettled(['.keep', ...filesInTheFolder].map(file => this.api.deleteObject(bucket, `${folder}/${file}`)));
+
+    return true;
+  }
+
+  /**
+   * Allows to delete a file according its path in S3 (can be deep)
+   *
+   * @param bucket Name of the bucket
+   * @param folder Path of the file to delete (e.g: myFile or myFolder/toto/myFile2)
+   */
+  async deleteFile(bucket: string, path: string): Promise<Boolean> {
+    this.logger.trace('AWSService.deleteFolder [bucket=%s, path=%s]', bucket, path);
+
+    await this.api.deleteObject(bucket, path);
+
+    return true;
   }
 }
