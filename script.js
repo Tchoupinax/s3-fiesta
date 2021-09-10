@@ -3,8 +3,8 @@ const { S3 } = require('./lib/index');
 const s3Client = new S3({ config: {
   endpoint: 's3.fr-par.scw.cloud',
   useSSL: false,
-  accessKey: 'SCWJDD9RHH2X4KRCTQ1Q',
-  secretKey: '0dce6efb-8390-435b-aef1-0f1cc86edf15',
+  accessKey: '',
+  secretKey: '',
   region: 'fr-par',
 }, logger: { trace: console.log }});
 
